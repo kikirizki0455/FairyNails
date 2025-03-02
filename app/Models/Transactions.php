@@ -38,4 +38,17 @@ public function transactionDetails()
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
+
+    public function getSelectedTransactions(){
+        return $this->whereIn('id');
+    }
+
+    public function scopeByStatus($query, $status)
+    {
+        if (!empty($status)) {
+            return $query->where('payment_status', $status);
+        }
+        
+        return $query;
+    }
 }

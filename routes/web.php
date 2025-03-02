@@ -58,11 +58,13 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
 
     Route::prefix('member')->group(function(){
         Route::get('/', [AdminUserController::class, 'user'])->name('admin.member');
+        
     });
 
     Route::prefix('transactions')->group(function(){
         Route::get('/', [AdminTransactionsController::class, 'transactions'])->name('admin.transactions');
         Route::get('/{transaction}', [AdminTransactionsController::class, 'show'])->name('admin.transactions.show');
+        Route::post('/transactions/export', [AdminTransactionsController::class, 'exportExcel'])->name('transactions.export');
         Route::put('/{transaction}/update-status', [AdminTransactionsController::class, 'updateStatus'])->name('admin.transactions.update-status');
         Route::put('/{transaction}/update-total', [AdminTransactionsController::class, 'updateTotal'])->name('admin.transactions.update-total');
     });

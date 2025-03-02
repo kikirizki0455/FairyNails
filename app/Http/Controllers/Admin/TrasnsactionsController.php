@@ -9,6 +9,8 @@ use App\Models\Transactions;
 use App\Models\User;
 use App\Models\Vouchers;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel; // ✅ Panggil Excel dari Maatwebsite
+use App\Exports\TransactionsExport;  //
 
 class TrasnsactionsController extends Controller
 {
@@ -169,6 +171,33 @@ class TrasnsactionsController extends Controller
     $finalPrice = $totalPrice - ($totalPrice * $discount);
 
     return $finalPrice;
+}
+
+public function exportExcel(Request $request)
+{
+    try {
+        $selectedIds = $request->input('selected_transactions', []);
+        
+        // Jika tidak ada transaksi yang dipilih
+        if (empty($selectedIds)) {
+            return redirect()->back()->with('error', 'Silakan pilih minimal satu transaksi untuk di-export');
+        }
+        
+        // Ambil transaksi yang dipilih
+        $selectedTransactions = transactions::whereIn('id', $selectedIds)
+                                ->with(['user', 'userVoucher.voucher'])
+                                ->get();
+        
+        if ($selectedTransactions->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data transaksi yang dapat di-export');
+        }
+        
+        $fileName = 'transaksi_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        return Excel::download(new TransactionsExport($selectedTransactions), $fileName);
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    }
 }
 
 }

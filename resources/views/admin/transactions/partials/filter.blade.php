@@ -25,7 +25,7 @@
         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#FF8FA4]">
 </div>
 
-<div class="flex items-end space-x-2">
+<div class="flex items-end space-x-2 mt-3">
     <button type="submit"
         class="bg-[#FF8FA4] hover:bg-[#F542C8] text-white px-4 py-2 rounded-lg transition duration-300">
         Filter
